@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    /* Base Options: */
+    "esModuleInterop": true, // Enables emit interoperability between CommonJS and ES Modules
+    "skipLibCheck": true, // Skip type checking of declaration files.
+    "target": "ES2022", // Target latest ECMAScript features supported by Node LTS
+    "allowJs": true, // Allow JavaScript files to be compiled
+    "resolveJsonModule": true, // Include modules imported with .json extension
+    "moduleDetection": "force", // Treat files as modules or scripts based on import/export statements
+
+    /* Strict Type-Checking Options: */
+    "strict": true, // Enable all strict type-checking options
+    "noImplicitAny": true, // Raise error on expressions and declarations with an implied 'any' type.
+    // "strictNullChecks": true, // Enable strict null checks.
+
+    /* Module Resolution Options: */
+    "module": "CommonJS", // Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'.
+    "moduleResolution": "node", // Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6).
+    "baseUrl": "./", // Base directory to resolve non-absolute module names.
+    "paths": {
+      // Optional: Define path aliases
+      "@/*": ["src/*"]
+    },
+
+    /* Emit Options: */
+    "outDir": "./dist", // Redirect output structure to the directory.
+    "declaration": true, // Generates corresponding '.d.ts' file.
+    "sourceMap": true, // Generates corresponding '.map' file.
+
+    /* Advanced Options: */
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file.
+    "lib": ["ES2022"] // Include standard library files
+  },
+  "include": ["src/**/*"], // Specifies the files to include in the program
+  "exclude": ["node_modules", "dist", "**/*.test.ts"] // Specifies the files to exclude
+}

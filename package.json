@@ -1,11 +1,14 @@
 {
   "name": "openai-api-inspect",
-  "version": "1.0.0",
-  "description": "an debug inspect api proxy server",
+  "version": "0.1.0",
+  "description": "A inspect proxy server for OpenAI compatible APIs",
   "keywords": [
-    "debug",
     "openai",
-    "api-proxy"
+    "proxy",
+    "debug",
+    "inspect",
+    "llm",
+    "api"
   ],
   "homepage": "https://github.com/zerob13/openai-api-inspect#readme",
   "bugs": {
@@ -18,8 +21,34 @@
   "license": "MIT",
   "author": "zerob13",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "openai-api-inspect": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "lint": "eslint . --ext .ts",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.0",
+    "openai": "^4.52.2",
+    "pino": "^9.2.0",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.17.30",
+    "@types/yargs": "^17.0.32",
+    "pino-pretty": "^11.2.1",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.2"
   }
 }
