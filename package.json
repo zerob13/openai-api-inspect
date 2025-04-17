@@ -38,14 +38,19 @@
   },
   "dependencies": {
     "@fastify/cors": "^9.0.1",
+    "@fastify/static": "^7.0.4",
+    "@fastify/websocket": "^10.0.1",
+    "@types/open": "^6.1.0",
     "dotenv": "^16.4.5",
     "fastify": "^4.28.0",
+    "open": "^10.1.1",
     "openai": "^4.52.2",
     "pino": "^9.2.0",
     "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@types/node": "^20.17.30",
+    "@types/ws": "^8.18.1",
     "@types/yargs": "^17.0.32",
     "pino-pretty": "^11.2.1",
     "ts-node-dev": "^2.0.0",

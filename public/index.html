@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenAI API Inspect - Logs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>OpenAI API Inspect Proxy - Live Logs</h1>
+
+    <div class="container">
+      <div class="ws-controls">
+        <button id="connect-ws">连接 WebSocket</button>
+        <button id="disconnect-ws" disabled>断开 WebSocket</button>
+        <span id="ws-status" style="color: grey">未连接</span>
+      </div>
+
+      <div id="log-container">
+        <h2>实时日志</h2>
+        <!-- Log entries will be appended here by script.js -->
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

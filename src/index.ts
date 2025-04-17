@@ -3,6 +3,7 @@
 import config from "./lib/config";
 import logger from "./lib/logger";
 import buildServer from "./server";
+import open from "open";
 
 async function start() {
   const server = buildServer();
@@ -16,6 +17,19 @@ async function start() {
     // API key should be passed via client request header.
 
     await server.listen({ host: config.proxyHost, port: config.proxyPort });
+
+    // --- Automatically open the browser to the UI ---
+    const uiUrl = `http://localhost:${config.proxyPort}/ui/`;
+    logger.info(`Opening inspect UI at ${uiUrl}`);
+    try {
+      await open(uiUrl);
+    } catch (openError: any) {
+      logger.error(
+        { err: openError },
+        `Failed to open browser automatically. Please navigate to ${uiUrl} manually.`
+      );
+    }
+    // --- End ---
 
     // Optional: Graceful shutdown handling
     const signals = ["SIGINT", "SIGTERM"];

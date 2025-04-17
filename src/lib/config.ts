@@ -51,10 +51,7 @@ interface ArgvShape {
 const parsedArgv = argv as ArgvShape;
 
 // Determine the target base URL
-const targetBaseUrl =
-  parsedArgv.targetBaseUrl ||
-  process.env.TARGET_BASE_URL ||
-  "https://api.ppinfra.com/v3/openai";
+const targetBaseUrl = parsedArgv.targetBaseUrl || process.env.TARGET_BASE_URL;
 
 // Validate and structure the configuration
 if (typeof targetBaseUrl !== "string" || !targetBaseUrl) {

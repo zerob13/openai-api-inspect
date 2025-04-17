@@ -1,0 +1,207 @@
+body {
+  font-family: sans-serif;
+  margin: 0; /* Remove default margin */
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent body scroll */
+}
+
+h1 {
+  text-align: center;
+  color: #555;
+  margin: 10px 0;
+  padding: 0 15px;
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allow container to grow */
+  padding: 0 15px 15px 15px; /* Add padding */
+  overflow: hidden; /* Contain children */
+}
+
+.ws-controls {
+  background-color: #eee;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  flex-shrink: 0; /* Prevent shrinking */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Spacing between buttons/status */
+}
+
+#log-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  flex-grow: 1; /* Take remaining space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding: 15px;
+}
+
+/* Log Entry Styling */
+.request-entry {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  background-color: #f9f9f9;
+  /* Remove padding here, apply to inner elements */
+}
+
+.entry-summary {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #e9ecef;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+}
+
+.entry-summary::after {
+  content: "▶"; /* Collapsed indicator */
+  margin-left: 10px;
+  font-size: 0.8em;
+}
+
+.request-entry.expanded > .entry-summary::after {
+  content: "▼"; /* Expanded indicator */
+}
+
+.entry-details {
+  display: none; /* Hidden by default */
+  padding: 10px;
+  border-top: 1px solid #eee; /* Separator */
+}
+
+.request-entry.expanded > .entry-details {
+  display: block; /* Show when expanded */
+}
+
+/* Headers and Bodies within details */
+.request-header-title, /* Renamed from .request-header */
+.response-header-title {
+  /* Renamed from .response-header */
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #0056b3;
+}
+
+.info {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 10px;
+  margin-bottom: 3px;
+}
+
+/* JSON/Code Block Styling */
+.code-block-wrapper {
+  position: relative; /* For copy button positioning */
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background-color: #e9ecef;
+  padding: 10px;
+  border-radius: 4px;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: monospace;
+  font-size: 0.9em;
+  margin: 0; /* Remove default pre margin */
+}
+
+code {
+  font-family: monospace;
+}
+
+.copy-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 0.8em;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.code-block-wrapper:hover .copy-button {
+  opacity: 1;
+}
+
+.copy-button:active {
+  background-color: #5a6268;
+}
+
+/* Stream Output */
+.stream-output {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background-color: #e2e6ea;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 5px;
+  min-height: 20px;
+  max-height: 300px; /* Limit height */
+  overflow-y: auto; /* Add scroll */
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.error {
+  color: #dc3545; /* Red for errors */
+  font-weight: bold;
+  padding: 10px;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}
+
+/* Status Message Styling */
+.status-message {
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid transparent;
+}
+
+.status-info {
+  background-color: #e2e3e5;
+  border-color: #d6d8db;
+  color: #383d41;
+}
+
+.status-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.status-warning {
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+  color: #856404;
+}
+
+.status-error {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
