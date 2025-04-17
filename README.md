@@ -34,7 +34,7 @@ A simple proxy server designed to inspect and forward requests to OpenAI-compati
     ```
 2.  Install dependencies:
     ```bash
-    npm install @fastify/static @fastify/websocket open @types/open
+    npm install 
     ```
 3.  Build the project (compiles TypeScript to JavaScript):
     ```bash
