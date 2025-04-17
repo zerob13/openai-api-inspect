@@ -205,17 +205,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- Construct Full Entry ---
+    const wasExpanded = isUpdate && entryDiv.classList.contains("expanded");
     entryDiv.innerHTML = `
       <div class="entry-summary">${escapeHtml(summaryHtml)}</div>
       <div class="entry-details">${detailsHtml}</div>
     `;
+    if (wasExpanded) {
+      entryDiv.classList.add("expanded");
+    }
 
-    // Add toggle listener only if it's a new entry
-    if (!isUpdate) {
-      const summaryElement = entryDiv.querySelector(".entry-summary");
-      summaryElement.addEventListener("click", () => {
+    // --- Add Toggle Listener (Always add/re-add after setting innerHTML) ---
+    const summaryElement = entryDiv.querySelector(".entry-summary");
+    if (summaryElement) {
+      const newSummaryElement = summaryElement.cloneNode(true);
+      summaryElement.parentNode.replaceChild(newSummaryElement, summaryElement);
+
+      newSummaryElement.addEventListener("click", () => {
         entryDiv.classList.toggle("expanded");
       });
+    }
+    // --- End Add Toggle Listener ---
+
+    // Add to container only if it's a new entry
+    if (!isUpdate) {
       logContainer.appendChild(entryDiv);
     }
 

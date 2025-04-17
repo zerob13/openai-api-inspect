@@ -25,30 +25,28 @@ A simple proxy server designed to inspect and forward requests to OpenAI-compati
 
 ---
 
-## Installation / 安装
-
-1.  Clone the repository:
-    ```bash
-    git clone https://github.com/zerob13/openai-api-inspect.git
-    cd openai-api-inspect
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install 
-    ```
-3.  Build the project (compiles TypeScript to JavaScript):
-    ```bash
-    npm run build
-    ```
-    *(Note: The `prepare` script usually runs this automatically after `npm install`)*
-
----
 
 ## Usage / 使用方法
 
-Run the proxy server from the project root directory:
+**Option 1: Using `npx` (Recommended for quick use)**
 
-从项目根目录运行代理服务器：
+The package is published to npm:
+
+该包已发布到 npm
+
+```bash
+npx openai-api-inspect [options]
+```
+
+This command executes the package directly without needing a global installation.
+
+此命令直接执行包，无需全局安装。
+
+**Option 2: Using `node` (After building)**
+
+Run the proxy server from the project root directory after building the project (`npm run build`):
+
+在构建项目 (`npm run build`) 后，从项目根目录运行代理服务器：
 
 ```bash
 node dist/index.js [options]
@@ -69,28 +67,62 @@ Options can be provided via command-line flags or environment variables. Command
 
 **Examples / 示例:**
 
-*   Run with default settings (Target: `https://api.ppinfra.com/v3/openai`, Port: `7891`):
-    *   使用默认设置运行 (目标: `https://api.ppinfra.com/v3/openai`, 端口: `7891`):
+*   Specify a different target API and port using `npx`:
+    *   使用 `npx` 指定不同的目标 API 和端口:
     ```bash
-    node dist/index.js
-    ```
-*   Specify a different target API and port:
-    *   指定不同的目标 API 和端口:
-    ```bash
-    node dist/index.js --targetBaseUrl https://api.openai.com/v1 --port 8080
+    npx openai-api-inspect --targetBaseUrl https://api.openai.com/v1 --port 8080
     # or using aliases
+    npx openai-api-inspect -t https://api.openai.com/v1 -p 8080
+    ```
+*   Specify a different target API and port using `node`:
+    *   使用 `node` 指定不同的目标 API 和端口:
+    ```bash
     node dist/index.js -t https://api.openai.com/v1 -p 8080
     ```
-*   Use environment variables:
-    *   使用环境变量:
+*   Use environment variables (works with both `npx` and `node`):
+    *   使用环境变量 (适用于 `npx` 和 `node`):
     ```bash
     export TARGET_BASE_URL=https://api.custom-ai.com/
     export PROXY_PORT=9000
-    node dist/index.js
+    npx openai-api-inspect 
+    # or
+    # node dist/index.js
     ```
+
+**Accessing the Web UI / 访问 Web UI:**
+
+Once the proxy is running, you can access the live request/response log viewer in your browser at:
+
+代理运行后，您可以在浏览器中访问实时请求/响应日志查看器：
+
+`http://localhost:[PROXY_PORT]/ui/`
+
+Replace `[PROXY_PORT]` with the actual port the proxy is listening on (default is `7891`).
+
+将 `[PROXY_PORT]` 替换为代理正在监听的实际端口（默认为 `7891`）。
+
 
 ---
 
+
+## Installation / 安装
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/zerob13/openai-api-inspect.git
+    cd openai-api-inspect
+    ```
+2.  Install dependencies:
+    ```bash
+    npm install 
+    ```
+3.  Build the project (compiles TypeScript to JavaScript):
+    ```bash
+    npm run build
+    ```
+    *(Note: The `prepare` script usually runs this automatically after `npm install`)*
+
+---
 ## Important Notes / 重要提示
 
 *   **API Keys:** This proxy is **transparent** regarding authentication. It **does not** add, remove, or validate API keys. The client application making requests to this proxy **must** include the correct `Authorization: Bearer YOUR_API_KEY` header required by the target API.
