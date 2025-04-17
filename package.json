@@ -1,0 +1,25 @@
+{
+  "name": "openai-api-inspect",
+  "version": "1.0.0",
+  "description": "an debug inspect api proxy server",
+  "keywords": [
+    "debug",
+    "openai",
+    "api-proxy"
+  ],
+  "homepage": "https://github.com/zerob13/openai-api-inspect#readme",
+  "bugs": {
+    "url": "https://github.com/zerob13/openai-api-inspect/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zerob13/openai-api-inspect.git"
+  },
+  "license": "MIT",
+  "author": "zerob13",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
