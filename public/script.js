@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let socket;
   let userScrolledUp = false; // Flag to track user scroll position
+  // 存储流式数据的映射
+  let streamDataMap = {};
 
   // --- Auto Scroll Check ---
   logContainer.addEventListener("scroll", () => {
@@ -73,9 +75,52 @@ document.addEventListener("DOMContentLoaded", () => {
           const streamContainer = document.getElementById(
             `stream-${messageData.id}`
           );
+
+          // 保存流式数据用于合并
+          if (!streamDataMap[messageData.id]) {
+            streamDataMap[messageData.id] = [];
+          }
+          streamDataMap[messageData.id].push(messageData.chunk);
+
           if (streamContainer) {
             const chunkNode = document.createTextNode(messageData.chunk);
             streamContainer.appendChild(chunkNode);
+
+            // 检查是否需要添加或更新合并按钮和原始数据按钮
+            let buttonContainer = document.getElementById(
+              `buttons-${messageData.id}`
+            );
+
+            if (!buttonContainer) {
+              buttonContainer = document.createElement("div");
+              buttonContainer.id = `buttons-${messageData.id}`;
+              buttonContainer.className = "stream-buttons";
+
+              // 合并JSON按钮
+              const mergeButton = document.createElement("button");
+              mergeButton.id = `merge-${messageData.id}`;
+              mergeButton.className = "merge-button";
+              mergeButton.textContent = "显示合并JSON";
+              mergeButton.onclick = () => showMergedJSON(messageData.id);
+
+              // 原始数据按钮
+              const rawButton = document.createElement("button");
+              rawButton.id = `raw-${messageData.id}`;
+              rawButton.className = "raw-button";
+              rawButton.textContent = "显示原始数据";
+              rawButton.onclick = () => showRawData(messageData.id);
+
+              // 添加按钮到容器
+              buttonContainer.appendChild(mergeButton);
+              buttonContainer.appendChild(rawButton);
+
+              // 在流容器后插入按钮容器
+              streamContainer.parentNode.insertBefore(
+                buttonContainer,
+                streamContainer.nextSibling
+              );
+            }
+
             // Scroll within stream container if needed (optional)
             if (shouldScroll) {
               streamContainer.scrollTop = streamContainer.scrollHeight;
@@ -309,6 +354,217 @@ document.addEventListener("DOMContentLoaded", () => {
       return JSON.stringify(body, null, 2);
     }
     return String(body);
+  }
+
+  // 显示原始流数据
+  function showRawData(id) {
+    if (!streamDataMap[id] || streamDataMap[id].length === 0) {
+      console.warn("无原始数据可显示");
+      return;
+    }
+
+    // 合并流式数据
+    const rawData = streamDataMap[id].join("");
+
+    // 获取或创建原始数据容器
+    let rawContainer = document.getElementById(`raw-data-${id}`);
+    if (!rawContainer) {
+      rawContainer = document.createElement("div");
+      rawContainer.id = `raw-data-${id}`;
+      rawContainer.className = "raw-data";
+
+      // 找到流容器的父元素并在正确位置插入
+      const buttonContainer = document.getElementById(`buttons-${id}`);
+      if (buttonContainer) {
+        buttonContainer.parentNode.insertBefore(
+          rawContainer,
+          buttonContainer.nextSibling
+        );
+      }
+    }
+
+    // 切换显示/隐藏
+    if (rawContainer.style.display === "none" || !rawContainer.style.display) {
+      rawContainer.style.display = "block";
+
+      // 显示格式化的原始数据
+      rawContainer.innerHTML = `
+        <div class="info">原始数据:</div>
+        <div class="code-block-wrapper">
+          <pre><code class="language-text">${escapeHtml(rawData)}</code></pre>
+          <button class="copy-button" data-copy-content="${escapeHtml(
+            rawData
+          )}">复制</button>
+        </div>
+      `;
+
+      // 添加复制按钮功能
+      addCopyListeners(rawContainer);
+
+      // 更新按钮文本
+      const rawButton = document.getElementById(`raw-${id}`);
+      if (rawButton) {
+        rawButton.textContent = "隐藏原始数据";
+      }
+    } else {
+      rawContainer.style.display = "none";
+
+      // 更新按钮文本
+      const rawButton = document.getElementById(`raw-${id}`);
+      if (rawButton) {
+        rawButton.textContent = "显示原始数据";
+      }
+    }
+  }
+
+  // 显示合并后的JSON
+  function showMergedJSON(id) {
+    if (!streamDataMap[id] || streamDataMap[id].length === 0) {
+      console.warn("无可合并的数据");
+      return;
+    }
+
+    // 合并流式数据
+    const mergedData = streamDataMap[id].join("");
+
+    // 获取或创建合并JSON容器
+    let mergedContainer = document.getElementById(`merged-${id}`);
+    if (!mergedContainer) {
+      mergedContainer = document.createElement("div");
+      mergedContainer.id = `merged-${id}`;
+      mergedContainer.className = "merged-json";
+
+      // 找到按钮容器并在其后插入
+      const buttonContainer = document.getElementById(`buttons-${id}`);
+      if (buttonContainer) {
+        // 检查是否已经有原始数据容器，如果有就在其后插入
+        const rawContainer = document.getElementById(`raw-data-${id}`);
+        if (rawContainer && rawContainer.style.display !== "none") {
+          buttonContainer.parentNode.insertBefore(
+            mergedContainer,
+            rawContainer.nextSibling
+          );
+        } else {
+          buttonContainer.parentNode.insertBefore(
+            mergedContainer,
+            buttonContainer.nextSibling
+          );
+        }
+      }
+    }
+
+    // 切换显示/隐藏
+    if (
+      mergedContainer.style.display === "none" ||
+      !mergedContainer.style.display
+    ) {
+      mergedContainer.style.display = "block";
+
+      try {
+        // 尝试解析数据行，每行都是 data: {...} 格式
+        // 过滤掉不是JSON对象的行，如 data: [DONE]
+        const dataLines = mergedData.split("\n").filter((line) => {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith("data:")) return false;
+          // 排除 [DONE] 和其他非JSON对象的行
+          const content = trimmed.substring(5).trim();
+          return content.startsWith("{") && content.endsWith("}");
+        });
+
+        if (dataLines.length > 0) {
+          // 提取所有行中的内容部分，组合成完整对象
+          let lastCompleteData = null;
+          let contentParts = [];
+
+          // 首先尝试收集所有的delta content
+          for (const line of dataLines) {
+            try {
+              // 确保我们只处理JSON部分
+              const jsonStartIndex = line.indexOf("{");
+              if (jsonStartIndex === -1) continue;
+
+              const jsonStr = line.substring(jsonStartIndex);
+              const jsonData = JSON.parse(jsonStr);
+
+              // 保存最后一个完整的数据对象，以便取出基本结构
+              lastCompleteData = jsonData;
+
+              // 提取内容部分
+              if (
+                jsonData.choices &&
+                jsonData.choices[0] &&
+                jsonData.choices[0].delta &&
+                jsonData.choices[0].delta.content
+              ) {
+                contentParts.push(jsonData.choices[0].delta.content);
+              }
+            } catch (err) {
+              console.warn("解析流行数据时出错，跳过:", err, "行内容:", line);
+            }
+          }
+
+          // 如果没有完整数据，就显示错误
+          if (!lastCompleteData) {
+            mergedContainer.innerHTML = `<div class="error">无法找到有效的JSON数据</div>`;
+            return;
+          }
+
+          // 创建完整的对象，使用最后一条数据作为模板
+          const completeObject = JSON.parse(JSON.stringify(lastCompleteData));
+
+          // 合并所有内容片段
+          const fullContent = contentParts.join("");
+
+          // 将合并后的内容放入完整对象中
+          if (completeObject.choices && completeObject.choices.length > 0) {
+            if (!completeObject.choices[0].delta) {
+              completeObject.choices[0].delta = {};
+            }
+            completeObject.choices[0].delta.content = fullContent;
+          }
+
+          // 更新usage统计（如果存在）
+          if (completeObject.usage) {
+            // 使用最后一个请求的usage数据，这通常是最完整的
+          }
+
+          // 显示格式化的JSON
+          mergedContainer.innerHTML = `
+            <div class="info">合并JSON:</div>
+            <div class="code-block-wrapper">
+              <pre><code class="language-json">${escapeHtml(
+                JSON.stringify(completeObject, null, 2)
+              )}</code></pre>
+              <button class="copy-button" data-copy-content="${escapeHtml(
+                JSON.stringify(completeObject, null, 2)
+              )}">复制</button>
+            </div>
+          `;
+
+          // 添加复制按钮功能
+          addCopyListeners(mergedContainer);
+        } else {
+          mergedContainer.innerHTML = `<div class="warning">无有效JSON数据行</div>`;
+        }
+      } catch (e) {
+        console.error("解析合并数据时出错:", e);
+        mergedContainer.innerHTML = `<div class="error">解析合并数据时出错: ${e.message}</div>`;
+      }
+
+      // 更新按钮文本
+      const mergeButton = document.getElementById(`merge-${id}`);
+      if (mergeButton) {
+        mergeButton.textContent = "隐藏合并JSON";
+      }
+    } else {
+      mergedContainer.style.display = "none";
+
+      // 更新按钮文本
+      const mergeButton = document.getElementById(`merge-${id}`);
+      if (mergeButton) {
+        mergeButton.textContent = "显示合并JSON";
+      }
+    }
   }
 
   connectButton.addEventListener("click", connectWebSocket);

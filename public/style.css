@@ -151,17 +151,15 @@ code {
 
 /* Stream Output */
 .stream-output {
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  background-color: #e2e6ea;
-  padding: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
   border-radius: 4px;
-  margin-top: 5px;
-  min-height: 20px;
-  max-height: 300px; /* Limit height */
-  overflow-y: auto; /* Add scroll */
+  white-space: pre-wrap;
+  word-break: break-all;
   font-family: monospace;
-  font-size: 0.9em;
 }
 
 .error {
@@ -204,4 +202,86 @@ code {
   background-color: #f8d7da;
   border-color: #f5c6cb;
   color: #721c24;
+}
+
+/* 为合并按钮添加样式 */
+.merge-button {
+  display: inline-block;
+  margin: 5px 0;
+  padding: 5px 10px;
+  background-color: #4b7bec;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.merge-button:hover {
+  background-color: #3867d6;
+}
+
+/* 合并JSON显示区域的样式 */
+.merged-json {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  display: none; /* 默认隐藏 */
+}
+
+.merged-json .info {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #3867d6;
+}
+
+/* 按钮容器样式 */
+.stream-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+/* 原始数据按钮样式 */
+.raw-button {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: #45aaf2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.raw-button:hover {
+  background-color: #2d98da;
+}
+
+/* 原始数据显示区域样式 */
+.raw-data {
+  margin: 10px 0;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 4px;
+  display: none; /* 默认隐藏 */
+}
+
+.raw-data .info {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #45aaf2;
+}
+
+/* 警告信息样式 */
+.warning {
+  color: #856404;
+  font-weight: bold;
+  padding: 10px;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  border-radius: 4px;
 }
