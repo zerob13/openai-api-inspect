@@ -80,7 +80,24 @@ const proxyRoutes: FastifyPluginAsync = async (fastify, opts) => {
       // } catch (broadcastError: any) { /* ... */ }
       // --- End Remove Old Broadcast ---
 
-      const targetUrl = `${config.targetBaseUrl}${originalUrl}`;
+      let targetUrl;
+      // 检查配置的targetBaseUrl是否已经包含了v1路径
+      if (config.targetBaseUrl.endsWith("/v1")) {
+        // 如果已经包含/v1，则移除originalUrl开头的/v1部分，防止重复
+        const pathWithoutPrefix = originalUrl.replace(/^\/v1/, "");
+        targetUrl = `${config.targetBaseUrl}${pathWithoutPrefix}`;
+      } else {
+        // 原始逻辑
+        targetUrl = `${config.targetBaseUrl}${originalUrl}`;
+      }
+
+      // 记录最终的目标URL，用于调试
+      request.log.info({
+        requestId,
+        type: "proxy_target",
+        url: targetUrl,
+      });
+
       // Use non-redacted headers for the actual fetch request
       const fetchHeaders = cloneAndRedactHeaders(originalRequestHeaders, false);
 

@@ -1,6 +1,6 @@
 {
   "name": "openai-api-inspect",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A inspect proxy server for OpenAI compatible APIs",
   "keywords": [
     "openai",
@@ -27,7 +27,8 @@
     "openai-api-inspect": "dist/index.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "public"
   ],
   "scripts": {
     "build": "tsc",

@@ -5,6 +5,9 @@ import logger from "./lib/logger";
 import buildServer from "./server";
 import open from "open";
 
+// 定义一个变量用于存储退出超时计时器
+let exitTimeout: NodeJS.Timeout | null = null;
+
 async function start() {
   const server = buildServer();
 
@@ -31,13 +34,31 @@ async function start() {
     }
     // --- End ---
 
-    // Optional: Graceful shutdown handling
+    // 改进的优雅退出处理
     const signals = ["SIGINT", "SIGTERM"];
     for (const signal of signals) {
       process.on(signal, async () => {
         logger.info(`Received ${signal}, shutting down gracefully...`);
-        await server.close();
-        process.exit(0);
+
+        // 强制退出的超时处理，确保程序不会卡住
+        if (exitTimeout) {
+          clearTimeout(exitTimeout);
+        }
+
+        exitTimeout = setTimeout(() => {
+          logger.warn("Forced exit due to shutdown timeout");
+          process.exit(1);
+        }, 3000); // 3秒后强制退出
+
+        try {
+          await server.close();
+          logger.info("Server closed successfully");
+          clearTimeout(exitTimeout as NodeJS.Timeout);
+          process.exit(0);
+        } catch (err) {
+          logger.error({ err }, "Error during server shutdown");
+          process.exit(1);
+        }
       });
     }
   } catch (err) {
