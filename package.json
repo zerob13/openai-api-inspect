@@ -50,7 +50,7 @@
     "yargs": "^17.7.2"
   },
   "devDependencies": {
-    "@types/node": "^20.17.30",
+    "@types/node": "^22.0.0",
     "@types/ws": "^8.18.1",
     "@types/yargs": "^17.0.32",
     "pino-pretty": "^11.2.1",
